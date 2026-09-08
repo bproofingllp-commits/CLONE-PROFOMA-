@@ -1,0 +1,7 @@
+server.js
+package.json
+package-lock.json
+node_modules
+data/
+start.bat
+stop.bat

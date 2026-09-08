@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Busy Accounting Pro</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://accounts.google.com/gsi/client"></script>
+  <!-- Socket.IO client (loaded dynamically if server available) -->
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <span class="logo-icon">&#9632;</span>
+          <span class="logo-text">Busy Accounting</span>
+        </div>
+        <button class="sidebar-toggle" id="sidebarToggle">&times;</button>
+      </div>
+      <ul class="nav-list">
+        <li class="nav-group">Main</li>
+        <li><a href="#" class="nav-item active" data-page="dashboard"><span class="nav-icon">&#9673;</span> Dashboard</a></li>
+        <li><a href="#" class="nav-item" data-page="party"><span class="nav-icon">&#9644;</span> Party Account</a></li>
+        <li><a href="#" class="nav-item" data-page="partydetails"><span class="nav-icon">&#128214;</span> Party Details</a></li>
+        <li class="nav-group">Masters</li>
+        <li><a href="#" class="nav-item" data-page="categories"><span class="nav-icon">&#9776;</span> Categories</a></li>
+        <li><a href="#" class="nav-item" data-page="makes"><span class="nav-icon">&#9881;</span> Makes</a></li>
+        <li><a href="#" class="nav-item" data-page="colours"><span class="nav-icon">&#9679;</span> Colours</a></li>
+        <li><a href="#" class="nav-item" data-page="salesman"><span class="nav-icon">&#128100;</span> Salesman</a></li>
+        <li class="nav-group">Invoicing</li>
+        <li><a href="#" class="nav-item" data-page="invoice" data-doctype="PROFORMA INVOICE"><span class="nav-icon">&#128480;</span> Proforma Invoice</a></li>
+        <li><a href="#" class="nav-item" data-page="invoice" data-doctype="ESTIMATE"><span class="nav-icon">&#128506;</span> Estimate</a></li>
+        <li><a href="#" class="nav-item" data-page="invoice" data-doctype="QUOTATION"><span class="nav-icon">&#128273;</span> Quotation</a></li>
+        <li><a href="#" class="nav-item" data-page="invoice" data-doctype="TAX INVOICE"><span class="nav-icon">&#128196;</span> Tax Invoice</a></li>
+        <li class="nav-group">Delivery</li>
+        <li><a href="#" class="nav-item" data-page="delivery"><span class="nav-icon">&#128694;</span> Delivery Section</a></li>
+        <li><a href="#" class="nav-item" data-page="moneyreceipt"><span class="nav-icon">&#128180;</span> Money Receipt</a></li>
+        <li><a href="#" class="nav-item" data-page="salesreport"><span class="nav-icon">&#128202;</span> Sales Report</a></li>
+        <li class="nav-group">Accounting</li>
+        <li><a href="#" class="nav-item" data-page="sales"><span class="nav-icon">&#9650;</span> Sales Entry</a></li>
+        <li><a href="#" class="nav-item" data-page="purchase"><span class="nav-icon">&#9660;</span> Purchase Entry</a></li>
+        <li><a href="#" class="nav-item" data-page="payment"><span class="nav-icon">&#9776;</span> Payment / Receipt</a></li>
+        <li><a href="#" class="nav-item" data-page="ledger"><span class="nav-icon">&#9772;</span> Ledger</a></li>
+        <li class="nav-group">Reports</li>
+        <li><a href="#" class="nav-item" data-page="trialbalance"><span class="nav-icon">&#9777;</span> Trial Balance</a></li>
+        <li><a href="#" class="nav-item" data-page="plstatement"><span class="nav-icon">&#9745;</span> P&L Statement</a></li>
+        <li><a href="#" class="nav-item" data-page="balancesheet"><span class="nav-icon">&#9778;</span> Balance Sheet</a></li>
+        <li class="nav-group">Production & System</li>
+        <li><a href="#" class="nav-item" data-page="productiondashboard"><span class="nav-icon">&#9881;</span> Production</a></li>
+        <li><a href="#" class="nav-item" data-page="backup"><span class="nav-icon">&#9779;</span> Backup & Restore</a></li>
+        <li class="nav-group">Settings</li>
+        <li><a href="#" class="nav-item" data-page="settings"><span class="nav-icon">&#9881;</span> Settings</a></li>
+      </ul>
+      <div class="sidebar-footer">
+        <span>v2.0.1</span>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+      <!-- Top Bar -->
+      <header class="topbar">
+        <button class="hamburger" id="hamburger">&#9776;</button>
+        <h2 class="page-title" id="pageTitle">Dashboard</h2>
+        <div class="topbar-actions">
+          <span id="serverStatus" class="server-status" style="display:none;"></span>
+          <span id="syncQueueBadge" class="sync-queue-badge" style="display:none;" title="Pending offline changes">&#9888; <span id="queueCount">0</span></span>
+          <button id="pushButton" class="btn btn-sm btn-primary" style="display:none;" title="Push: backup + force all clients to refresh">&#128259; Push</button>
+          <button id="pullButton" class="btn btn-sm btn-outline" style="display:none;" title="Pull: fetch all data from server">&#128229; Pull</button>
+          <button id="syncButton" class="btn btn-sm btn-outline" style="display:none;" title="Sync: fetch all PIs, production slips &amp; data from server">&#128260; Sync</button>
+          <button id="loginButton" class="btn btn-sm btn-outline" style="display:none;">Sign In</button>
+          <span id="userBadge" class="user-badge" style="display:none;"></span>
+          <button class="theme-toggle" id="themeToggle" title="Toggle theme">&#9789;</button>
+          <span class="financial-year" id="financialYear">FY 2026-27</span>
+          <span class="company-name" id="companyName">My Company</span>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <div class="content-area" id="contentArea">
+        <!-- Pages are loaded here dynamically -->
+      </div>
+    </main>
+  </div>
+
+  <!-- Login Modal -->
+  <div class="modal-overlay" id="loginOverlay" style="display:none;">
+    <div class="modal-box" style="max-width:400px;">
+      <div class="modal-header">
+        <h3>Sign In</h3>
+        <button class="modal-close" id="loginClose">&times;</button>
+      </div>
+      <div class="modal-body" id="loginBody">
+        <div id="loginError" style="color:var(--danger);font-size:12px;margin-bottom:8px;display:none;"></div>
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="loginUsername" placeholder="admin" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" placeholder="admin123">
+        </div>
+        <button class="btn btn-primary" id="loginSubmit" style="width:100%;margin-top:8px;">Sign In</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal overlay -->
+  <div class="modal-overlay" id="modalOverlay" style="display:none;">
+    <div class="modal-box" id="modalBox">
+      <div class="modal-header">
+        <h3 id="modalTitle">Modal</h3>
+        <button class="modal-close" id="modalClose">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer" id="modalFooter"></div>
+    </div>
+  </div>
+
+  <!-- Loading overlay -->
+  <div id="loadingOverlay" class="loading-overlay" style="display:none;">
+    <div class="spinner"></div>
+    <div id="loadingText" class="loading-text">Loading...</div>
+  </div>
+
+  <!-- Toast container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="js/db.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/party.js"></script>
+  <script src="js/invoice.js"></script>
+  <script src="js/accounting.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/party-details.js"></script>
+  <script src="js/categories.js"></script>
+  <script src="js/makes.js"></script>
+  <script src="js/colours.js"></script>
+  <script src="js/salesman.js"></script>
+  <script src="js/production.js"></script>
+  <script src="js/production-dashboard.js"></script>
+  <script src="js/money-receipt.js"></script>
+  <script src="js/sales-report.js"></script>
+  <script src="js/app.js"></script>
+  <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js');</script>
+  <script>
+    // Set server control link to current IP
+    (function(){
+      const link = document.getElementById('navServerCtrl');
+      if(link) {
+        const host = location.hostname;
+        link.href = 'http://' + host + ':3001';
+      }
+    })();
+  </script>
+</body>
+</html>
+

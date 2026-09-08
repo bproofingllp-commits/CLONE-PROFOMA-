@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="32" fill="#1e3a5f"/>
+  <text x="96" y="74" text-anchor="middle" font-family="Arial" font-size="32" font-weight="bold" fill="#fff">BUSY</text>
+  <text x="96" y="112" text-anchor="middle" font-family="Arial" font-size="20" font-weight="bold" fill="#4fc3f7">ACCOUNTING</text>
+  <rect x="36" y="124" width="120" height="2" rx="1" fill="#4fc3f7"/>
+  <text x="96" y="158" text-anchor="middle" font-family="Arial" font-size="14" fill="#aab">PRO</text>
+</svg>
