@@ -1,0 +1,1 @@
+window.BusySalesReport=window.BusySalesReport||{};

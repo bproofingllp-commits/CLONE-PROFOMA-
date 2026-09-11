@@ -1,0 +1,1 @@
+window.BusyColours=window.BusyColours||{};

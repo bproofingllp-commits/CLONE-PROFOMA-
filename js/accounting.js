@@ -1,0 +1,1 @@
+window.BusyAccounting=window.BusyAccounting||{};
