@@ -1,0 +1,1 @@
+window.BusyMoneyReceipt=window.BusyMoneyReceipt||{};

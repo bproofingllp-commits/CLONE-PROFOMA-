@@ -1,0 +1,1 @@
+window.BusyDashboard=window.BusyDashboard||{};

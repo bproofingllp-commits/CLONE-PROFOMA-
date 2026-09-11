@@ -1,0 +1,1 @@
+window.BusyCategories=window.BusyCategories||{};

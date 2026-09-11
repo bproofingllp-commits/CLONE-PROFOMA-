@@ -1,0 +1,1 @@
+window.BusyPartyDetails=window.BusyPartyDetails||{};

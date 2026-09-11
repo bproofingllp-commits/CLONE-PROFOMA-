@@ -1,0 +1,1 @@
+window.BusyDB=window.BusyDB||{};
